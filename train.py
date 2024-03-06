@@ -41,3 +41,4 @@ class Trainer():
 
         test_loss /= num_batches
         print(f'evaluation loss: {test_loss:>7f}')
+        return test_loss

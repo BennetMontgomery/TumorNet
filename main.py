@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 from torch import nn
 from tumorset import TumorSet
@@ -35,12 +34,17 @@ trainer = Trainer(
             )
 print(model)
 
-for epoch in range(5):
+losses = []
+
+for epoch in range(500):
     print(f"Epoch {epoch + 1}\n-------------------------------")
     trainer.train()
-    trainer.test()
+    losses.append(trainer.test())
 
 # save model
 torch.save(model.state_dict(), './checkpoints/model.pth')
+
+plt.plot(losses)
+plt.show()
 
 print("Terminated")
