@@ -36,49 +36,49 @@ class UpSampleBlock(nn.Module):
         return self.network(torch.cat((skipx, x), dim=1 if x.dim() == 4 else 0))
 
 class TumorNet(nn.Module):
-    def __init__(self, basefeatures=64):
+    def __init__(self, basechannels=64):
         super().__init__()
 
         # Tumor net uses a U-Net architecture (Ronneberger et al., 2015)
         # input convolution
         self.inconv = nn.Sequential(
-            nn.Conv2d(1, basefeatures, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.Conv2d(1, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU(),
-            nn.Conv2d(basefeatures, basefeatures, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.Conv2d(basechannels, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU(),
-            nn.Conv2d(basefeatures, basefeatures, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.Conv2d(basechannels, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU()
         )
 
         # first downsample
-        self.down1 = DownSampleBlock(basefeatures, basefeatures*2)
+        self.down1 = DownSampleBlock(basechannels, basechannels * 2)
 
         # second downsample
-        self.down2 = DownSampleBlock(basefeatures*2, basefeatures*4)
+        self.down2 = DownSampleBlock(basechannels * 2, basechannels * 4)
 
         # third downsample
-        self.down3 = DownSampleBlock(basefeatures*4, basefeatures*8)
+        self.down3 = DownSampleBlock(basechannels * 4, basechannels * 8)
 
         # fourth downsample ("Bottleneck" segment)
-        self.down4 = DownSampleBlock(basefeatures*8, basefeatures*16)
+        self.down4 = DownSampleBlock(basechannels * 8, basechannels * 16)
 
         # first upsample
-        self.up1 = UpSampleBlock(basefeatures*16, basefeatures*8)
+        self.up1 = UpSampleBlock(basechannels * 16, basechannels * 8)
 
         # second upsample
-        self.up2 = UpSampleBlock(basefeatures*8, basefeatures*4)
+        self.up2 = UpSampleBlock(basechannels * 8, basechannels * 4)
 
         # third upsample
-        self.up3 = UpSampleBlock(basefeatures*4, basefeatures*2)
+        self.up3 = UpSampleBlock(basechannels * 4, basechannels * 2)
 
         # output convolution
-        self.up4 = nn.ConvTranspose2d(basefeatures*2, basefeatures, kernel_size=2, stride=2)
+        self.up4 = nn.ConvTranspose2d(basechannels * 2, basechannels, kernel_size=2, stride=2)
         self.outputconv = nn.Sequential(
-            nn.Conv2d(basefeatures*2, basefeatures, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.Conv2d(basechannels * 2, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU(),
-            nn.Conv2d(basefeatures, basefeatures, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.Conv2d(basechannels, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU(),
-            nn.Conv2d(basefeatures, 1, kernel_size=1, padding='same', padding_mode='reflect'),
+            nn.Conv2d(basechannels, 1, kernel_size=1, padding='same', padding_mode='reflect'),
             nn.Sigmoid() # probability of tumor 0-1
         )
 
