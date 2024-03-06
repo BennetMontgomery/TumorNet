@@ -4,11 +4,13 @@ import json
 import numpy as np
 import torch
 from torchvision.io import read_image
+from torchvision.transforms import Grayscale
+from torchvision.transforms.functional import convert_image_dtype
 from torch.utils.data import Dataset
 from matplotlib.path import Path
 
 class TumorSet(Dataset):
-    def __init__(self, img_dir, annotations_file='_annotations.coco.json', transform=None, target_transform=None):
+    def __init__(self, img_dir, annotations_file='_annotations.coco.json', transform=Grayscale(), target_transform=None):
         self.img_dir = img_dir
         self.transform = transform
         self.target_transform = target_transform
@@ -24,6 +26,8 @@ class TumorSet(Dataset):
     def __getitem__(self, idx):
         # load image from file
         image = read_image(str(os.path.join(self.img_dir, self.image_data[idx]['file_name'])))
+        image = self.transform(image)
+        image = convert_image_dtype(image)
 
         # generate segmentation from annotations matching the image id
         segmentations = []
@@ -43,7 +47,8 @@ class TumorSet(Dataset):
             new_grid = path.contains_points(points)
             grid = grid | new_grid.reshape((self.image_data[idx]['width'], self.image_data[idx]['height']))
 
-        target_grid = np.where(grid, 255, 0)
+        grid = [grid]
+        target_grid = np.where(grid, 1, 0)
         target_grid_tensor = torch.from_numpy(target_grid)
 
         # return the image tensor and segmentation grid
