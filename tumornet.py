@@ -9,8 +9,10 @@ class DownSampleBlock(nn.Module):
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         self.network = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(),
             nn.Conv2d(out_channels, out_channels, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
 
@@ -26,8 +28,10 @@ class UpSampleBlock(nn.Module):
 
         self.network = nn.Sequential(
             nn.Conv2d(inchannels, outchannels, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.BatchNorm2d(outchannels),
             nn.ReLU(),
             nn.Conv2d(outchannels, outchannels, kernel_size=3, padding='same', padding_mode='reflect'),
+            nn.BatchNorm2d(outchannels),
             nn.ReLU()
         )
 
@@ -83,6 +87,9 @@ class TumorNet(nn.Module):
         )
 
     def forward(self, x):
+        if x.dim() == 3:
+            x.unsqueeze_(0)
+
         # downsample
         x1 = self.inconv(x) # -> up4
         x2 = self.down1(x1) # -> up3

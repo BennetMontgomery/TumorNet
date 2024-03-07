@@ -23,11 +23,11 @@ device = (
     else "cpu"
 )
 
-model = TumorNet(basechannels=64).to(device)
+model = TumorNet(basechannels=32).to(device)
 trainer = Trainer(
                 model=model,
                 loss_fn=nn.BCELoss(),
-                optimizer=torch.optim.SGD(model.parameters(), lr=1e-3),
+                optimizer=torch.optim.SGD(model.parameters(), lr=1e-2),
                 train_dataloader=train_loader,
                 test_dataloader=test_loader,
                 device=device
@@ -36,7 +36,7 @@ print(model)
 
 losses = []
 
-for epoch in range(500):
+for epoch in range(30):
     print(f"Epoch {epoch + 1}\n-------------------------------")
     trainer.train()
     losses.append(trainer.test())
