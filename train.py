@@ -1,10 +1,11 @@
 import torch
 
 class Trainer():
-    def __init__(self, model, loss_fn, optimizer, train_dataloader, test_dataloader, device):
+    def __init__(self, model, loss_fn, optimizer, scheduler, train_dataloader, test_dataloader, device):
         self.model = model
         self.loss_fn = loss_fn
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
         self.device = device
@@ -41,4 +42,8 @@ class Trainer():
 
         test_loss /= num_batches
         print(f'evaluation loss: {test_loss:>7f}')
+
+        if self.scheduler is not None:
+            self.scheduler.step(test_loss)
+
         return test_loss

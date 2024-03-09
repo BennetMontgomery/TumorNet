@@ -24,10 +24,12 @@ device = (
 )
 
 model = TumorNet(basechannels=32).to(device)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
 trainer = Trainer(
                 model=model,
-                loss_fn=nn.BCELoss(),
-                optimizer=torch.optim.SGD(model.parameters(), lr=1e-2),
+                loss_fn=nn.BCEWithLogitsLoss(),
+                optimizer=optimizer,
+                scheduler=torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer),
                 train_dataloader=train_loader,
                 test_dataloader=test_loader,
                 device=device
@@ -36,13 +38,13 @@ print(model)
 
 losses = []
 
-for epoch in range(30):
+for epoch in range(25):
     print(f"Epoch {epoch + 1}\n-------------------------------")
     trainer.train()
     losses.append(trainer.test())
 
 # save model
-torch.save(model.state_dict(), './checkpoints/model.pth')
+torch.save(model.state_dict(), './checkpoints/model3.pth')
 
 plt.plot(losses)
 plt.show()

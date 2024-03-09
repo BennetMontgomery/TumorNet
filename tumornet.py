@@ -82,11 +82,13 @@ class TumorNet(nn.Module):
             nn.ReLU(),
             nn.Conv2d(basechannels, basechannels, kernel_size=3, padding='same', padding_mode='reflect'),
             nn.ReLU(),
-            nn.Conv2d(basechannels, 1, kernel_size=1, padding='same', padding_mode='reflect'),
-            nn.Sigmoid() # probability of tumor 0-1
+            nn.Conv2d(basechannels, 1, kernel_size=1, padding='same', padding_mode='reflect')
+            #nn.Sigmoid() # probability of tumor 0-1
         )
 
-    def forward(self, x):
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x, inference=False):
         if x.dim() == 3:
             x.unsqueeze_(0)
 
@@ -107,5 +109,8 @@ class TumorNet(nn.Module):
         # render to mask
         x = self.up4(x)
         x = self.outputconv(torch.cat((x1, x), dim=1 if x.dim() == 4 else 0))
+
+        if inference:
+            x = self.sigmoid(x)
 
         return x

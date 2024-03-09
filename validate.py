@@ -8,6 +8,8 @@ from tumornet import TumorNet
 from tumorset import TumorSet
 from matplotlib import pyplot as plt
 
+threshold = 0.1
+
 dataset = TumorSet('./data/valid')
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
 
@@ -20,27 +22,28 @@ device = (
 )
 
 model = TumorNet(basechannels=32).to(device)
-model.load_state_dict(torch.load('./checkpoints/model.pth'))
+model.load_state_dict(torch.load('./checkpoints/model3.pth'))
 
 validator = Trainer(
     model=model,
-    loss_fn=nn.BCELoss(),
+    loss_fn=nn.BCEWithLogitsLoss(),
     optimizer=None,
+    scheduler=None,
     train_dataloader=None,
     test_dataloader=dataloader,
     device=device
 )
 
-# validator.test()
+validator.test()
 
-for index in [random.randint(0, len(dataset)) for _ in range(4)]:
+for index in [random.randint(0, len(dataset)) for _ in range(3)]:
     validation_feature = dataset[index][0]
 
     with torch.no_grad():
         validation_feature_cuda = validation_feature.to(device)
-        prediction = model(validation_feature_cuda)
+        prediction = model(validation_feature_cuda, inference=True)
 
-    prediction = np.where(np.squeeze(prediction.cpu(), axis=0) > 0.16, 1, 0)
+    prediction = np.where(np.squeeze(prediction.cpu(), axis=0) > threshold, 1, 0)
 
     plt.imshow(validation_feature.cpu().T, cmap='gray')
     plt.show()
