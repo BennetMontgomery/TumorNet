@@ -38,13 +38,13 @@ print(model)
 
 losses = []
 
-for epoch in range(25):
+for epoch in range(5):
     print(f"Epoch {epoch + 1}\n-------------------------------")
-    trainer.train()
+    trainer.train(checkpointing=True)
     losses.append(trainer.test())
 
 # save model
-torch.save(model.state_dict(), './checkpoints/model3.pth')
+torch.save(model.state_dict(), './checkpoints/model4.pth')
 
 plt.plot(losses)
 plt.show()

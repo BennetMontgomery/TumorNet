@@ -8,7 +8,7 @@ from tumornet import TumorNet
 from tumorset import TumorSet
 from matplotlib import pyplot as plt
 
-threshold = 0.1
+threshold = 0.05
 
 dataset = TumorSet('./data/valid')
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
@@ -22,7 +22,7 @@ device = (
 )
 
 model = TumorNet(basechannels=32).to(device)
-model.load_state_dict(torch.load('./checkpoints/model3.pth'))
+model.load_state_dict(torch.load('./checkpoints/model4.pth'))
 
 validator = Trainer(
     model=model,

@@ -10,14 +10,15 @@ class Trainer():
         self.test_dataloader = test_dataloader
         self.device = device
 
-    def train(self):
+    def train(self, checkpointing=False):
         size = len(self.train_dataloader.dataset)
         self.model.train()
         for batch, (features, masks) in enumerate(self.test_dataloader):
             features, masks = features.to(self.device), masks.to(self.device)
 
             # get model prediction mask
-            prediction = self.model(features)
+            prediction = self.model(features, checkpointing=checkpointing)
+
             loss = self.loss_fn(prediction, masks.float())
 
             # optimize model
@@ -29,7 +30,7 @@ class Trainer():
                 loss, current = loss.item(), (batch + 1) * len(features)
                 print(f'loss: {loss:>7f}, [{current:>5d}/{size:>5d}]')
 
-    def test(self):
+    def test(self, checkpointing=False):
         num_batches = len(self.test_dataloader)
         self.model.eval()
 
@@ -37,7 +38,7 @@ class Trainer():
         with torch.no_grad():
             for features, masks in self.test_dataloader:
                 features, masks = features.to(self.device), masks.to(self.device)
-                prediction = self.model(features)
+                prediction = self.model(features, checkpointing=checkpointing)
                 test_loss += self.loss_fn(prediction, masks.float()).item()
 
         test_loss /= num_batches
