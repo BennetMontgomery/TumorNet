@@ -7,13 +7,6 @@ class DownSampleBlock(nn.Module):
         super().__init__()
 
         # down sample blocks consist of a 2x2 stride 2 pooling operation followed by 2 3x3 ReLU activated convolutions.
-        # self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        # self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding='same', padding_mode='reflect')
-        # self.bn1 = nn.BatchNorm2d(out_channels)
-        # self.act1 = nn.ReLU()
-        # self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding='same', padding_mode='reflect')
-        # self.bn2 = nn.BatchNorm2d(out_channels)
-        # self.act2 = nn.ReLU()
         self.block = nn.Sequential(
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding='same', padding_mode='reflect'),
@@ -36,14 +29,6 @@ class UpSampleBlock(nn.Module):
         super().__init__()
 
         # up sample blocks consist of a 2x2 transposed convolution followed by 2 3x3 ReLU activated convolutions
-        # self.upconv = nn.ConvTranspose2d(inchannels, inchannels//2, kernel_size=2, stride=2)
-        #
-        # self.conv1 = nn.Conv2d(inchannels, outchannels, kernel_size=3, padding='same', padding_mode='reflect')
-        # self.bn1 = nn.BatchNorm2d(outchannels)
-        # self.act1 = nn.ReLU()
-        # self.conv2 = nn.Conv2d(outchannels, outchannels, kernel_size=3, padding='same', padding_mode='reflect')
-        # self.bn2 = nn.BatchNorm2d(outchannels)
-        # self.act2 = nn.ReLU()
         self.upconv = nn.ConvTranspose2d(inchannels, inchannels//2, kernel_size=2, stride=2)
         self.block = nn.Sequential(
             nn.Conv2d(inchannels, outchannels, kernel_size=3, padding='same', padding_mode='reflect'),

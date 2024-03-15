@@ -23,8 +23,9 @@ device = (
     else "cpu"
 )
 
-model = TumorNet(basechannels=32).to(device)
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
+model = TumorNet(basechannels=64).to(device)
+# optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, amsgrad=True)
 trainer = Trainer(
                 model=model,
                 loss_fn=nn.BCEWithLogitsLoss(),
@@ -34,17 +35,16 @@ trainer = Trainer(
                 test_dataloader=test_loader,
                 device=device
             )
-print(model)
 
 losses = []
 
-for epoch in range(5):
+for epoch in range(25):
     print(f"Epoch {epoch + 1}\n-------------------------------")
     trainer.train(checkpointing=True)
-    losses.append(trainer.test())
+    losses.append(trainer.test(checkpointing=True))
 
 # save model
-torch.save(model.state_dict(), './checkpoints/model4.pth')
+torch.save(model.state_dict(), './checkpoints/model6.pth')
 
 plt.plot(losses)
 plt.show()

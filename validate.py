@@ -8,7 +8,7 @@ from tumornet import TumorNet
 from tumorset import TumorSet
 from matplotlib import pyplot as plt
 
-threshold = 0.05
+threshold = 0.14
 
 dataset = TumorSet('./data/valid')
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
@@ -21,8 +21,8 @@ device = (
     else 'cpu'
 )
 
-model = TumorNet(basechannels=32).to(device)
-model.load_state_dict(torch.load('./checkpoints/model4.pth'))
+model = TumorNet(basechannels=64).to(device)
+model.load_state_dict(torch.load('./checkpoints/model6.pth'))
 
 validator = Trainer(
     model=model,
@@ -34,9 +34,9 @@ validator = Trainer(
     device=device
 )
 
-validator.test()
+# validator.test(checkpointing=True)
 
-for index in [random.randint(0, len(dataset)) for _ in range(3)]:
+for index in [random.randint(0, len(dataset)) for _ in range(5)]:
     validation_feature = dataset[index][0]
 
     with torch.no_grad():
