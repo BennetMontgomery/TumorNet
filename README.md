@@ -38,7 +38,7 @@ appropriately thresholded and drawn over the input images, identify potentially 
 Example network output on an MRI image along the coronal axis containing a pituitary tumor:
 ![Input image](https://i.imgur.com/03k8bSA.png)
 ![Output mask](https://i.imgur.com/sRTTzSG.png)
-![Output mask overlaid on input image, alpha=0.5](https://i.imgur.com/KDX4IxW.png)
+![Output mask overlaid on input image, alpha=0.5](https://i.imgur.com/KDX4IxW.png) \
 The first image is the input image, the second is the output mask, and the third image is the output mask overlaid on 
 input image to highlight the predicted tumor location. 
 
