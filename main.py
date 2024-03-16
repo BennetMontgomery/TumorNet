@@ -38,13 +38,19 @@ trainer = Trainer(
 
 losses = []
 
-for epoch in range(25):
+for epoch in range(5):
     print(f"Epoch {epoch + 1}\n-------------------------------")
     trainer.train(checkpointing=True)
-    losses.append(trainer.test(checkpointing=True))
+    test_loss = trainer.test(checkpointing=True)
+    losses.append(test_loss)
+    print(f'evaluation loss: {test_loss:>7f}')
+    if losses[-1] == min(losses):
+        # save model if it beats best test performance in this epoch
+        torch.save(model.state_dict(), f'./checkpoints/model7.pth')
+
 
 # save model
-torch.save(model.state_dict(), './checkpoints/model6.pth')
+# torch.save(model.state_dict(), './checkpoints/model7.pth')
 
 plt.plot(losses)
 plt.show()
