@@ -5,8 +5,40 @@ into tumor and non-tumor categories. Based on the [U-Net architecture](https://a
 Ronneberger et al., 2015. Trained using the [Brain Tumor Image Dataset](https://gts.ai/dataset-download/brain-tumor-image-dataset-semantic-segmentation/).
 
 ## Usage
-To train a custom model, run
-``python main.py``. To validate a trained model, run ``python validate.py``.
+To train a custom model, run \
+``python train_model.py``\
+Training will proceed with a default list of assumptions. To customize training, use the following command line options:
+```
+  -h, --help            show this help message and exit
+  --train-data PATH, -tr PATH
+                        Location of training data. Must include a
+                        _annotations.coco.json file.
+  --test-data PATH, -te PATH
+                        Location of test data. Must include a
+                        _annotations.coco.json file.
+  --model-path PATH, -m PATH
+                        Location to save model when training is complete
+  --checkpointing, -c   Whether or not to exchange compute for memory
+                        footprint. Enables model segment checkpointing
+  --batch-size N, -bs N
+                        Batch size of training and testing data. Should be a
+                        power of 2
+  --base-channels N, -bc N
+                        Number of channels in the first and last model layer.
+                        Determines parameter count. Should be a multiple of 16
+  --learning-rate N, -lr N
+                        Learning rate of the model optimizer. Should be 10 >=
+                        0.0001, <= 0.1
+  --epochs N, -e N      Number of epochs to train the model
+ ```
+
+The default flags are
+```
+--train-data ./data/train --test-data ./data/test --model-path ./checkpoints/model.pth --batch-size 2 --base-channels 64 \
+--learning-rate 0.001 --epochs 5 
+```
+
+To validate a trained model, run ``python validate.py``. Ensure line 25 points to the correct model. 
 
 A dataset of annotated brain tumor images must be placed in a ``./data`` folder, separated into ``./data/train``, 
 ``./data/test``, and ``./data/valid`` in order for the training and validation scripts to work out of the box. 
@@ -51,6 +83,6 @@ tissue, as tumor tissue.
 
 ## Planned Features
 The following features are planned for the immediate future:
-* Scripts for easily customizable training, validation, and prediction
+* Scripts for easily customizable validation and prediction
 * A script for easy dataset fetching
 * Automatic input scaling to match expected image size
