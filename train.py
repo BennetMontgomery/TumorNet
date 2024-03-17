@@ -48,7 +48,7 @@ class Trainer():
 
         return test_loss
 
-    def validate(self, threshold, calculate_loss=False, checkpointing=False):
+    def validate(self, threshold, calculate_loss=True, checkpointing=False):
         # determine loss
         loss = self.test(checkpointing=checkpointing) if calculate_loss else None
 

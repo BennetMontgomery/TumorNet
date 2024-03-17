@@ -5,6 +5,9 @@ into tumor and non-tumor categories. Based on the [U-Net architecture](https://a
 Ronneberger et al., 2015. Trained using the [Brain Tumor Image Dataset](https://gts.ai/dataset-download/brain-tumor-image-dataset-semantic-segmentation/).
 
 ## Usage
+Two scripts, ``train_model.py`` and ``validate.py`` are included for easy training and validation of custom models. 
+During inference and training, images must pre-scaled to 640x640. 
+### Training
 To train a custom model, run \
 ``python train_model.py``\
 Training will proceed with a default list of assumptions. To customize training, use the following command line options:
@@ -38,12 +41,33 @@ The default flags are
 --learning-rate 0.001 --epochs 5 
 ```
 
-To validate a trained model, run ``python validate.py``. Ensure line 25 points to the correct model. 
-
-A dataset of annotated brain tumor images must be placed in a ``./data`` folder, separated into ``./data/train``, 
-``./data/test``, and ``./data/valid`` in order for the training and validation scripts to work out of the box. 
-
-During inference and training, images must pre-scaled to 640x640. 
+### Validation
+To validate a trained model, run ``python validate.py``. Validation will proceed with a default list of assumptions. To
+customize validation, use the following command line options:
+```
+-h, --help            show this help message and exit
+--model PATH, -m PATH
+                    Path to trained instance of TumorNet model
+--base-channels N, -bc N
+                    Base channels argument used to train model
+--valid-data PATH, -vd PATH
+                    Path to validation dataset
+--threshold FLOAT, -t FLOAT
+                    Threshold to consider tissue tumor tissue for
+                    validation purposes, model dependent
+--batch-size N, -b N  Batch size for model evaluation. Should be a power of
+                    2
+--checkpointing, -c   Whether or not to exchange compute for memory
+                    footprint. Enables model segment checkpointing
+--visualize Z+, -v Z+
+                    If included, outputs Z+ (integer >= 0) visual
+                    validation examples
+```
+The following flags are default:
+```
+--model ./checkpoints/model.pth --base-channels 64 --valid-path ./data/valid --threshold 0.20 --batch-size 2
+```
+Ensure ``--base-channels`` matches the ``--base-channels`` option used for training.
 
 ## Installation
 To install TumorNet, 
@@ -83,6 +107,6 @@ tissue, as tumor tissue.
 
 ## Planned Features
 The following features are planned for the immediate future:
-* Scripts for easily customizable validation and prediction
+* Script for one-off prediction
 * A script for easy dataset fetching
 * Automatic input scaling to match expected image size
