@@ -5,8 +5,8 @@ into tumor and non-tumor categories. Based on the [U-Net architecture](https://a
 Ronneberger et al., 2015. Trained using the [Brain Tumor Image Dataset](https://gts.ai/dataset-download/brain-tumor-image-dataset-semantic-segmentation/).
 
 ## Usage
-Two scripts, ``train_model.py`` and ``validate.py`` are included for easy training and validation of custom models. 
-During inference and training, images must pre-scaled to 640x640. 
+Three scripts, ``train_model.py``, ``validate.py``, and ``predict.py`` are included for easy training, validation, and
+inference of custom models. During training, validation, and inference images must pre-scaled to 640x640. 
 ### Training
 To train a custom model, run \
 ``python train_model.py``\
@@ -69,6 +69,33 @@ The following flags are default:
 ```
 Ensure ``--base-channels`` matches the ``--base-channels`` option used for training.
 
+### Inference
+In order to use a trained model on an arbitrary input image, run ``python predict.py``. An output image will be 
+generated overlaying a mask on the input image. To customize the inference process, use the following command line
+options:
+```
+-h, --help            show this help message and exit
+--model FILE, -m FILE
+                    Specify the path to a trained model file.
+--base-channels N, -b N
+                    Base channels of the model. Must match what was used
+                    for this flag during training
+--input FILE, -i FILE
+                    Specify a file name for the input image
+--output FILE, -o FILE
+                    Specify a file name for the primary output image
+--threshold FLOAT, -t FLOAT
+                    Specify the masking threshold for a pixel to be
+                    considered for inclusion in the output mask
+--checkpointing, -c   Whether or not to exchange compute for memory
+                    footprint. Enables model segment checkpointing
+```
+The following flags are default:
+```
+--model ./checkpoints/model.pth --base-channels 64 --input in.png --output out.png --threshold 0.20
+```
+As with validation, ensure ``--base-channels`` matches the ``--base-channels`` option used for training.
+
 ## Installation
 To install TumorNet, 
 1. download this repository with \
@@ -107,6 +134,6 @@ tissue, as tumor tissue.
 
 ## Planned Features
 The following features are planned for the immediate future:
-* Script for one-off prediction
-* A script for easy dataset fetching
+* A script for easy dataset fetching and requirements setup
 * Automatic input scaling to match expected image size
+* Link to a pretrained model for download
